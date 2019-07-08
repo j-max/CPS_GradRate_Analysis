@@ -21,7 +21,7 @@
 # Feature Engineering
 
 > Both the 2016-17 and 2017-18 original datasets from the data portal dataset includes 661 total schools and 184 high schools.  Of those 184 high schools, 121 in  2016-17 and 124 in 2017-18 had non-null graduation rates.  A histogram of the graduation rates across both years is left-skewed.
-![left-skewed histogram of CPS high school graduation rates](https://github.com/j-max/CPS_GradRate_Analysis/blob/master/image_files/gradrates_161718.svg?short_path=20d9aeb?raw=true))
+![left-skewed histogram of CPS high school graduation rates](data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbm)
 > The features are not consistent across years; for 2016-17 there are 91 feature columns, and for 2017-18 there are 92. The following is a list of the features I analyzed.
 
 
