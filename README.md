@@ -1,3 +1,7 @@
+# Table of Contents  
+[Summary](#Summary)  
+[Data Sources](#Data Sources)  
+[Modeling](#Modeling)  
 
 
 # Summary
@@ -17,7 +21,7 @@
 > To help organize the data, I loaded raw and processed data into a Postgres database, and used psycopg2 to pull it into pandas data frames.
 
 ---
-
+	
 # Feature Engineering
 
 > Both the 2016-17 and 2017-18 original datasets from the data portal dataset includes 661 total schools and 184 high schools.  Of those 184 high schools, 121 in  2016-17 and 124 in 2017-18 had non-null graduation rates.  A histogram of the graduation rates across both years is left-skewed:
@@ -56,3 +60,5 @@
  > 18. Transportation_El
 
 > Look in the feature_engineering/feature_engineering.py file for the code for the feature tranformations. For exploratory analyses, look at the eda.ipynb or eda.html file.
+
+# Modeling

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+   </head>
+   <body>
+   <div id = "svgcontainer"></div>
+   <script language="JavaScript">
+
+      var width = 500;
+      var height = 500;
+      var svg = d3.select("#svgcontainer")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+      var group = svg.append("g")
+         .attr("transform", "translate(60, 60) rotate(45)");
+
+      var line = group.append("line")
+         .attr("x1", 100)
+         .attr("y1", 0)
+         .attr("x2", 200)
+         .attr("y2", 0)
+         .style('stroke', "rgb(202,0,202)")
+         .style("stroke-width", 5);;
+   </script>
+
+   </body>
+</html>
