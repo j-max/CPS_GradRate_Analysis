@@ -24,7 +24,7 @@ file_path_201617_sp = root + 'data/chicago_data_portal_csv_files/Chicago_Public_
 paths = [file_path_201819_sp, file_path_201718_sp, file_path_201617_sp]
 
 
-def create_sp_path_dictionary(year, paths):
+def create_sp_path_dictionary(years, paths):
 
 
     sp_path_dictionary = {y:'year_missing' for y in years}
@@ -44,7 +44,29 @@ def import_multiple_sy_profiles(sp_paths):
 
     return sy_dictionary
 
+def isolate_important_columns(sy_df):
+
+    # These columns are consistent across 2016-2019 School Years
+    sy_df = sy_df[[ "School_ID", "Graduation_Rate_School", "Student_Count_Total","Student_Count_Low_Income",
+"Student_Count_Special_Ed","Student_Count_English_Learners",
+"Student_Count_Black","Student_Count_Hispanic","Student_Count_White",
+"Student_Count_Asian","Student_Count_Native_American","Student_Count_Other_Ethnicity",
+"Student_Count_Asian_Pacific_Islander","Student_Count_Multi","Student_Count_Hawaiian_Pacific_Islander",
+                    "Student_Count_Ethnicity_Not_Available", 'Is_High_School', 'Dress_Code', "Classroom_Languages","Transportation_El"]]
+
+    return sy_df
+
 def isolate_high_schools(sy_df):
+
+    '''
+    Some of the School Year profiles' Is_High_School columns are encoded as booleans, some as Y/N.  This function encodes them all as booleans.
+
+    It then returns a dataframe with only high schools.
+
+    Parameters:
+    sy_df: a dataframe created from a school profile associated with one school year.
+
+    '''
 
     if sy_df['Is_High_School'].dtype == 'O':
         # Convert y/n to True/False
