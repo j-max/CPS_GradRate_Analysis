@@ -22,7 +22,7 @@ The first source of data are the school year profiles:
 
 Files should be downloaded and placed in the `data/chicago_data_portal_csv_files` folder.
 
-I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data/]('data') folder.
+I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data](./data) folder.
 
 
 ---
@@ -66,4 +66,3 @@ I supplimented the Data Portal data with mean incomes associated with each schoo
 
 > Look in the feature_engineering/feature_engineering.py file for the code for the feature tranformations. For exploratory analyses, look at the eda.ipynb or eda.html file.
 
-# Modeling
