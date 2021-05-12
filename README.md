@@ -6,19 +6,24 @@
 
 # Summary
 
-> I completed the project outlined below for the Metis Data Science Bootamp. I chose to analyze Chicago Public Schools high school graduation rates via linear regression.  I am aware that graduation rates are not the be all end all as a metric for school quality. Like test scores, graduation rates are just numbers. No matter how hard one tries, numbers can never capture the full picture of a student's education. Nonetheless, a linear regression study requires a continuous target variable, and graduation rate fits the bill.
+> This projects models Chicago Public Schools high school graduation rates with regression techniques.  I am aware that graduation rates are not the be all end all as a metric for school quality. Like test scores, graduation rates are just numbers. No matter how hard one tries, numbers can never capture the full picture of a student's education. Nonetheless, a linear regression study requires a continuous target variable, and graduation rate fits the bill.
 
 ---
 
 # Data Sources
-> The  Chicago Data Portal School Profile csv files are the main data source for this project. The current version of this project focuses on the 2016-17 and 2017-18 school years.
 
-> 1. [School Year 2016-17](https://data.cityofchicago.org/Education/Chicago-Public-Schools-School-Profile-Information-/8i6r-et8s)
-> 2. [School Year 2017-18](https://data.cityofchicago.org/Education/Chicago-Public-Schools-School-Profile-Information-/w4qj-h7bg)
+The school year profile `csvs` have been downloaded from the [Chicago Data Portal](https://data.cityofchicago.org/).   
 
-> I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data/]('data') folder.
+The first source of data are the school year profiles:
 
-> To help organize the data, I loaded raw and processed data into a Postgres database, and used psycopg2 to pull it into pandas data frames.
+  - [2016-2017 Profile](https://data.cityofchicago.org/Education/Chicago-Public-Schools-School-Profile-Information-/8i6r-et8s)
+  - [2017-2018 Profile](https://data.cityofchicago.org/Education/Chicago-Public-Schools-School-Profile-Information-/w4qj-h7bg)
+  - [2018-2019 Profile](https://data.cityofchicago.org/Education/Chicago-Public-Schools-School-Profile-Information-/kh4r-387c)
+
+Files should be downloaded and placed in the `data/chicago_data_portal_csv_files` folder.
+
+I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data/]('data') folder.
+
 
 ---
 	
