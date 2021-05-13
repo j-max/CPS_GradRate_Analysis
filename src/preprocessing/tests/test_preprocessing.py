@@ -7,7 +7,7 @@ sys.path.append(root)
 
 from src.preprocessing.preprocessing import import_multiple_sy_profiles, create_sp_path_dictionary
 
-from src.preprocessing.preprocessing import isolate_important_columns, isolate_high_schools, convert_is_high_school_to_bool
+from src.preprocessing.preprocessing import isolate_important_columns, isolate_high_schools, convert_is_high_school_to_bool, convert_dress_code_to_bool
 
 from src.preprocessing.preprocessing import years, paths
 
@@ -48,6 +48,16 @@ def test_convert_is_high_school_to_bool():
     for year in sp_dfs:
         df = convert_is_high_school_to_bool(sp_dfs[year])
         assert df['Is_High_School'].dtype == 'bool'
+
+
+def test_convert_dress_code_to_bool():
+
+    for year in sp_dfs:
+        print(year)
+        df = convert_dress_code_to_bool(sp_dfs[year])
+        assert df['Dress_Code'].dtype == 'bool'
+
+
 
 def test_isolate_high_schools_sy_profiles():
 

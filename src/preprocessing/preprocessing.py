@@ -69,6 +69,15 @@ def convert_is_high_school_to_bool(sy_df):
 
     return sy_df
 
+def convert_dress_code_to_bool(sy_df):
+
+    if sy_df['Dress_Code'].dtype == 'O':
+        # Convert y/n to True/False
+        sy_df['Dress_Code'] = sy_df['Dress_Code'].map({'Y':True, 'N':False})
+
+
+    return sy_df
+
 def isolate_high_schools(sy_df):
 
     sy_df = sy_df[sy_df['Is_High_School'] == True]
