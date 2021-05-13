@@ -5,9 +5,15 @@ home_folder = 'CPS_GradRate_Analysis'
 root = full_path.split(home_folder)[0] + home_folder + '/'
 sys.path.append(root)
 
-from src.preprocessing.preprocessing import import_multiple_sy_profiles, create_sp_path_dictionary, isolate_high_schools
+from src.preprocessing.preprocessing import import_multiple_sy_profiles, create_sp_path_dictionary
+
+from src.preprocessing.preprocessing import isolate_important_columns, isolate_high_schools, convert_is_high_school_to_bool
 
 from src.preprocessing.preprocessing import years, paths
+
+sp_path_dict = create_sp_path_dictionary(years, paths)
+sp_dfs = import_multiple_sy_profiles(sp_path_dict)
+
 
 def test_create_sp_path_dictionary():
 
@@ -25,6 +31,23 @@ def test_import_multiple_sy_profiles():
     assert type(import_multiple_sy_profiles(sp_path_dict)[years[0]]) == type(pd.DataFrame())
 
 
+def test_isolate_important_columns():
+
+    df_1819 = isolate_important_columns(sp_dfs['2018-2019'])
+    
+    assert len(df_1819.columns) == 20
+
+    for year in sp_dfs:
+        print(year)
+        df = isolate_important_columns(sp_dfs[year])
+        assert len(df.columns) == 20
+
+
+def test_convert_is_high_school_to_bool():
+
+    for year in sp_dfs:
+        df = convert_is_high_school_to_bool(sp_dfs[year])
+        assert df['Is_High_School'].dtype == 'bool'
 
 def test_isolate_high_schools_sy_profiles():
 
