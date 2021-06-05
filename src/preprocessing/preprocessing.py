@@ -47,7 +47,7 @@ def import_multiple_sy_profiles(sp_paths):
 def isolate_important_columns(sy_df):
 
     # These columns are consistent across 2016-2019 School Years
-    sy_df = sy_df[[ "School_ID", "Graduation_Rate_School", "Student_Count_Total",
+    sy_df = sy_df[[ "School_ID","Short_Name","Graduation_Rate_School", "Student_Count_Total",
                     "Student_Count_Low_Income", "Student_Count_Special_Ed","Student_Count_English_Learners",
 "Student_Count_Black","Student_Count_Hispanic","Student_Count_White",
 "Student_Count_Asian","Student_Count_Native_American","Student_Count_Other_Ethnicity",
@@ -84,6 +84,28 @@ def isolate_high_schools(sy_df):
 
     return sy_df
 
-sp_paths = create_sp_path_dictionary(years, paths)
-df_dict = import_multiple_sy_profiles(sp_paths)
+def drop_no_gr_schools(sy_df):
 
+    '''
+    Drop schools from the dataframe that do not have graduation rates.
+    This function is meant to be called after isolating high schools.
+
+    Many of the high schools without graduation rates are charter schools.
+    For example, YCCS (Youth Connection Charter Schools).
+    '''
+
+    sy_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
+
+    return sy_df
+
+sp_paths = create_sp_path_dictionary(years, paths)
+original_dict = import_multiple_sy_profiles(sp_paths)
+df_dict = {year:isolate_important_columns(original_dict[year]) for year in original_dict}
+df_dict = {year:convert_is_high_school_to_bool(df_dict[year]) for year in df_dict}
+df_dict = {year:convert_dress_code_to_bool(df_dict[year]) for year in df_dict}
+hs_df_dict = {year:isolate_high_schools(df_dict[year]) for year in df_dict}
+
+hs_df_dict = {year:drop_no_gr_schools(df_dict[year]) for year in df_dict}
+
+# Check that 42 high schools of the original 183 have been dropped in 2018-2019 school year
+assert hs_df_dict['2018-2019'].shape[0] == 183-42
