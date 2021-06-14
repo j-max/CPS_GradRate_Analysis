@@ -98,14 +98,35 @@ def drop_no_gr_schools(sy_df):
 
     return sy_df
 
+def make_percent_low_income(sy_df):
+    '''
+    Create new column which is percent of the total population which is low income.
+
+    '''
+
+    sy_df['perc_low_income'] = 0
+
+    sy_df['perc_low_income'] = sy_df['Student_Count_Low_Income']/sy_df['Student_Count_Total']
+
+    sy_df.fillna({'perc_low_income': 0}, inplace=True)
+
+    return sy_df
+
+def student_count_greater_than_0(sy_df):
+    pass
+    
+
+
+
+
 sp_paths = create_sp_path_dictionary(years, paths)
 original_dict = import_multiple_sy_profiles(sp_paths)
 df_dict = {year:isolate_important_columns(original_dict[year]) for year in original_dict}
 df_dict = {year:convert_is_high_school_to_bool(df_dict[year]) for year in df_dict}
 df_dict = {year:convert_dress_code_to_bool(df_dict[year]) for year in df_dict}
 hs_df_dict = {year:isolate_high_schools(df_dict[year]) for year in df_dict}
-
 hs_df_dict = {year:drop_no_gr_schools(df_dict[year]) for year in df_dict}
+hs_df_dict = {year:make_percent_low_income(df_dict[year]) for year in df_dict}
 
 # Check that 42 high schools of the original 183 have been dropped in 2018-2019 school year
 assert hs_df_dict['2018-2019'].shape[0] == 183-42
