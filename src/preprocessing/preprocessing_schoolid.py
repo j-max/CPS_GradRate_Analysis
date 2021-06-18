@@ -12,6 +12,85 @@ eda = full_path.split(home_folder)[0] + home_folder + '/' + 'notebooks/eda/'
 
 sys.path.append(root)
 
+def merge_pr_and_sp(path_to_sp_csv, path_to_pr_csv):
+
+    '''
+    The two main sources of data for this project come from
+    School Profile csv and the Progress report csv.
+
+    This function merges the two on the School_ID column.
+
+    Parameters:
+    path_to_sp_csv: path to the School Profile csv
+    path_to_pr_csv: path to the Progress Report csv
+
+    Returns:
+    merged_df: A dataframe with all of the columns from both
+    the school profile and progress report csvs
+    '''
+    sp_df = pd.read_csv(path_to_sp_csv)
+    pr_df = pd.read_csv(path_to_pr_csv)
+
+    merged_df = sp_df.merge(pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
+
+    return merged_df
+
+def isolate_high_schools(merged_df):
+
+    merged_df = merged_df[merged_df['Is_High_School'] == True]
+
+    return merged_df
+
+
+def drop_no_gr_schools(merged_df):
+
+    '''
+    Drop schools from the dataframe that do not have graduation rates.
+    This function is meant to be called after isolating high schools.
+
+    Many of the high schools without graduation rates are charter schools.
+    For example, YCCS (Youth Connection Charter Schools).
+    '''
+
+    merged_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
+
+    return merged_df
+
+def drop_specialed_options(merged_df, drop_options=True):
+
+    '''
+    Special Education and Citywide Options schools have different
+    missions and do not prioritize graduation rates.  They report
+    graduation rates means below 20%.
+
+    parameters:
+    merged_df: a dataframe with both school profile and progress report
+    data merged together.
+
+    drop_options: a boolean that, if True, drops schools
+    with School-Type='Citywide-Options'
+
+    Returns:
+    merged_df: dataframe with schools that have graduation rates
+    suitable for modeling.
+    '''
+
+    if drop_options:
+
+        merged_df = merged_df[~merged_df['School_Type'].isin(
+                     ['Citywide-Option', 'Special Education'])]
+
+        return merged_df
+
+    else:
+
+        merged_df = merged_df[~merged_df['School_Type'].isin(
+                     ['Special Education'])]
+
+        return merged_df
+
+
+
 def isolate_important_columns(sy_df):
 
     # These columns are consistent across 2016-2019 School Years
@@ -43,27 +122,6 @@ def convert_is_high_school_to_bool(sy_df):
     if sy_df['Is_High_School'].dtype == 'O':
         # Convert y/n to True/False
         sy_df['Is_High_School'] = sy_df['Is_High_School'].map({'Y':True, 'N':False})
-
-    return sy_df
-
-
-def isolate_high_schools(sy_df):
-
-    sy_df = sy_df[sy_df['Is_High_School'] == True]
-
-    return sy_df
-
-def drop_no_gr_schools(sy_df):
-
-    '''
-    Drop schools from the dataframe that do not have graduation rates.
-    This function is meant to be called after isolating high schools.
-
-    Many of the high schools without graduation rates are charter schools.
-    For example, YCCS (Youth Connection Charter Schools).
-    '''
-
-    sy_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
 
     return sy_df
 
