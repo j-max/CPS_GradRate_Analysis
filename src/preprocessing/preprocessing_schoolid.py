@@ -3,7 +3,8 @@ pd.set_option('display.max_columns', None)
 
 import numpy as np
 import os, sys
-
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.impute import SimpleImputer
 
 full_path = os.getcwd()
 home_folder = 'CPS_GradRate_Analysis'
@@ -55,7 +56,7 @@ def drop_no_gr_schools(merged_df):
     merged_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
 
     return merged_df
-
+ 
 def drop_specialed_options(merged_df, drop_options=True):
 
     '''
@@ -89,6 +90,91 @@ def drop_specialed_options(merged_df, drop_options=True):
 
         return merged_df
 
+def make_percent_low_income(merged_df):
+
+    '''
+    Create new column which is percent of the total population which is low income.
+
+    Parameters:
+    merged_df: dataframe of school id's with low income population count.
+
+    Returns:
+    A dataframe with a per_low_income column added to it.
+    '''
+
+    merged_df['perc_low_income'] = 0
+
+    merged_df['perc_low_income'] = merged_df['Student_Count_Low_Income']/merged_df['Student_Count_Total']
+
+    merged_df.fillna({'perc_low_income': 0}, inplace=True)
+
+    return merged_df
+
+def creative_school_encoding(merged_df, drop=True, drop_column='EMERGING'):
+
+    '''
+    The creative school certification shows a statistically significant
+    effect on graduation rates based on visual inspection and an ANOVA test.
+
+    This function One Hot Encodes the 'Creative_School_Certification' column.
+
+    Parameters:
+    merged_df: dataframe of school id's with Creative_School_Certification column.
+
+    drop: parameter to designate dropping a column.  To be set to true with
+    vanilla linear regression models.
+
+    drop_column:  The column to drop.  Set by default to 'EMERGING' so that the
+    regression coefficients will be positive in relation to the lowest certificate
+    achievement category.
+
+    Returns:
+    Dataframe with a one_hot_encoded version of Creative_School_Certification
+    and the original column dropped.
+
+    '''
+
+    if drop:
+        ohe_csc = OneHotEncoder(drop=['EMERGING'], sparse=False )
+
+        csc_ohe = pd.DataFrame(
+                            ohe_csc.fit_transform(
+                                merged_df[['Creative_School_Certification']]), 
+                            index=merged_df.index, 
+                            columns = ohe_csc.get_feature_names(['creative']))
+
+        merged_df = merged_df.merge(csc_ohe, left_index=True, right_index=True)
+        merged_df.drop('Creative_School_Certification', axis=1, inplace=True)
+
+        return merged_df
+
+
+def prep_teacher_attendance(merged_df):
+
+    '''
+    Teacher attendance is recorded for two years in the progress report.
+    For example, school year 18-19 will have teacher attendance rates
+    for 2018 and 2019.
+
+    This function takes the average across the two years.
+    '''
+
+    merged_df['teacher_attendance'] = (merged_df['Teacher_Attendance_Year_1_Pct'] +\
+                                       merged_df['Teacher_Attendance_Year_2_Pct'])/2
+
+ 
+    return merged_df
+
+def create_df_for_modeling(merged_df):
+
+    df = isolate_high_schools(merged_df)
+    df = drop_no_gr_schools(df)
+    df = drop_specialed_options(df)
+    df = make_percent_low_income(df)
+    df = creative_school_encoding(df)
+    df = prep_teacher_attendance(df)
+
+    return df
 
 
 def isolate_important_columns(sy_df):
@@ -125,21 +211,8 @@ def convert_is_high_school_to_bool(sy_df):
 
     return sy_df
 
-def make_percent_low_income(sy_df):
-    '''
-    Create new column which is percent of the total population which is low income.
-
-    '''
-
-    sy_df['perc_low_income'] = 0
-
-    sy_df['perc_low_income'] = sy_df['Student_Count_Low_Income']/sy_df['Student_Count_Total']
-
-    sy_df.fillna({'perc_low_income': 0}, inplace=True)
-
-    return sy_df
-
 def remove_no_student_count_schools(sy_df):
+
     '''
     If a school does not have any students recorded in the school year profile, remove the school.
     '''
