@@ -35,8 +35,7 @@ class SchoolYear():
         self.path_to_pr_csv = path_to_pr_csv
         self.sp_df = pd.read_csv(self.path_to_sp_csv)
         self.pr_df = pd.read_csv(self.path_to_pr_csv)
-        self._original_merged_df = self.merge_pr_and_sp()
-        self.merged_df = self.original_merged_df.copy()
+        self.merged_df = self.merge_pr_and_sp()
 
     def merge_pr_and_sp(self):
 
@@ -51,11 +50,44 @@ class SchoolYear():
         the school profile and progress report csvs
         '''
 
-        self._original_merged_df = self.sp_df.merge(self.pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
+        self.merged_df = self.sp_df.merge(self.pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
 
         # make a copy so that originals can be compared to preprocessed df
 
-        return self.original_merged_df
+        return self.merged_df
+
+    def convert_is_high_school_to_bool(self):
+        '''
+        Some of the School Year profiles' Is_High_School columns are encoded as booleans,
+        df some as Y/N.  This function encodes them all as booleans.
+        '''
+
+        if self.merged_df['Is_High_School'].dtype == 'O':
+            # Convert y/n to True/False
+            self.merged_df['Is_High_School'] = self.merged_df['Is_High_School'].map({'Y':True, 'N':False})
+
+        return self.merged_df
+
+    def make_percent_low_income(self):
+
+        '''
+        Create new column which is percent of the total population which is low income.
+
+        Parameters:
+        self.merged_df: dataframe of school id's with low income population count.
+
+        Returns:
+        A dataframe with a per_low_income column added to it.
+        '''
+
+        self.merged_df['perc_low_income'] = 0
+
+        self.merged_df['perc_low_income'] = self.merged_df['Student_Count_Low_Income']/self.merged_df['Student_Count_Total']
+
+        self.merged_df.fillna({'perc_low_income': 0}, inplace=True)
+
+        return self.merged_df
+
 
     def isolate_high_schools(self):
 
@@ -77,6 +109,7 @@ class SchoolYear():
         self.merged_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
 
         return self.merged_df
+
 
     def drop_specialed_options(self, drop_options=True):
 
@@ -110,26 +143,6 @@ class SchoolYear():
                         ['Special Education'])]
 
             return self.merged_df
-
-    def make_percent_low_income(self):
-
-        '''
-        Create new column which is percent of the total population which is low income.
-
-        Parameters:
-        self.merged_df: dataframe of school id's with low income population count.
-
-        Returns:
-        A dataframe with a per_low_income column added to it.
-        '''
-
-        self.merged_df['perc_low_income'] = 0
-
-        self.merged_df['perc_low_income'] = self.merged_df['Student_Count_Low_Income']/self.merged_df['Student_Count_Total']
-
-        self.merged_df.fillna({'perc_low_income': 0}, inplace=True)
-
-        return self.merged_df
 
     def creative_school_encoding(self, drop=True, drop_column='EMERGING'):
 
@@ -208,17 +221,7 @@ class SchoolYear():
 
         return pr_df
 
-    def convert_is_high_school_to_bool(self):
-        '''
-        Some of the School Year profiles' Is_High_School columns are encoded as booleans,
-        df some as Y/N.  This function encodes them all as booleans.
-        '''
 
-        if self.merged_df['Is_High_School'].dtype == 'O':
-            # Convert y/n to True/False
-            self.sy_df['Is_High_School'] = self.sy_df['Is_High_School'].map({'Y':True, 'N':False})
-
-        return self.sy_df
 
     def remove_no_student_count_schools(self):
 
