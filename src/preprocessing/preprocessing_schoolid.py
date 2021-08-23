@@ -16,6 +16,14 @@ sys.path.append(root)
 
 class SchoolYear():
 
+    '''
+
+    Params:
+    path_to_sp_csv: Path to a School Profile csv
+    path_to_pr_csv: Path to a Progress Report csv from the same year as above
+
+    '''
+
     def __init__(self, path_to_sp_csv, path_to_pr_csv):
 
         '''
@@ -27,7 +35,7 @@ class SchoolYear():
         self.path_to_pr_csv = path_to_pr_csv
         self.sp_df = pd.read_csv(self.path_to_sp_csv)
         self.pr_df = pd.read_csv(self.path_to_pr_csv)
-        self.original_merged_df = self.merge_pr_and_sp()
+        self._original_merged_df = self.merge_pr_and_sp()
         self.merged_df = self.original_merged_df.copy()
 
     def merge_pr_and_sp(self):
@@ -38,16 +46,12 @@ class SchoolYear():
 
         This function merges the two on the School_ID column.
 
-        Parameters:
-        path_to_sp_csv: path to the School Profile csv
-        path_to_pr_csv: path to the Progress Report csv
-
         Returns:
         merged_df: A dataframe with all of the columns from both
         the school profile and progress report csvs
         '''
 
-        self.original_merged_df = self.sp_df.merge(self.pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
+        self._original_merged_df = self.sp_df.merge(self.pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
 
         # make a copy so that originals can be compared to preprocessed df
 
@@ -242,6 +246,6 @@ class SchoolYear():
 
 ### Tests
 
-sy_1819 = SchoolYear('../../data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv', '../../data/chicago_data_portal_csv_files/.ipynb_checkpoints/Chicago_Public_Schools_-_School_Progress_Reports_SY1819-checkpoint.csv')
+# sy_1819 = SchoolYear('../../data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv', '../../data/chicago_data_portal_csv_files/.ipynb_checkpoints/Chicago_Public_Schools_-_School_Progress_Reports_SY1819-checkpoint.csv')
 
-df_1819 = sy_1819.create_df_for_modeling()
+# df_1819 = sy_1819.create_df_for_modeling()
