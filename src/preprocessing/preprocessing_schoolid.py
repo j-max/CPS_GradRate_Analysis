@@ -36,6 +36,9 @@ class SchoolYear():
         self.sp_df = pd.read_csv(self.path_to_sp_csv)
         self.pr_df = pd.read_csv(self.path_to_pr_csv)
         self.merged_df = self.merge_pr_and_sp()
+        self.total_high_school_count = self.merged_df['Is_High_School'].sum()
+        self.total_school_count = len(sy_1819.merged_df['School_ID'].unique())
+
 
     def merge_pr_and_sp(self):
 
@@ -55,6 +58,7 @@ class SchoolYear():
         # make a copy so that originals can be compared to preprocessed df
 
         return self.merged_df
+
 
     def convert_is_high_school_to_bool(self):
         '''
@@ -129,7 +133,7 @@ class SchoolYear():
         self.merged_df: dataframe with schools that have graduation rates
         suitable for modeling.
         '''
-
+        
         if drop_options:
 
             self.merged_df = self.merged_df[~self.merged_df['School_Type'].isin(
@@ -249,6 +253,6 @@ class SchoolYear():
 
 ### Tests
 
-# sy_1819 = SchoolYear('../../data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv', '../../data/chicago_data_portal_csv_files/.ipynb_checkpoints/Chicago_Public_Schools_-_School_Progress_Reports_SY1819-checkpoint.csv')
+sy_1819 = SchoolYear('../../data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv', '../../data/chicago_data_portal_csv_files/.ipynb_checkpoints/Chicago_Public_Schools_-_School_Progress_Reports_SY1819-checkpoint.csv')
 
 # df_1819 = sy_1819.create_df_for_modeling()
