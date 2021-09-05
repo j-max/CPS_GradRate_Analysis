@@ -36,6 +36,7 @@ class SchoolYear():
         self.sp_df = pd.read_csv(self.path_to_sp_csv)
         self.pr_df = pd.read_csv(self.path_to_pr_csv)
         self.merged_df = self.merge_pr_and_sp()
+        self.convert_is_high_school_to_bool()
         self.total_high_school_count = self.merged_df['Is_High_School'].sum()
         self.total_school_count = len(self.merged_df['School_ID'].unique())
 
