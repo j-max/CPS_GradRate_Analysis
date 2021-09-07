@@ -116,6 +116,16 @@ class SchoolYear():
         return self.merged_df
 
 
+    # TODO Drop schools with no student counts 
+
+    def drop_no_student_schools(self):
+
+        '''
+        Drop Schools which have Student Count Total = 0.
+        '''
+
+        self.merged_df = self.merged_df[self.merged_df['Student_Count_Total'] > 0]
+
     def drop_specialed_options(self, drop_options=True):
 
         '''
