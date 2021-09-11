@@ -1,3 +1,4 @@
+import sklearn.pipeline
 from sklearn.model_selection import cross_validate
 
 def cv_cps(model, X_train, y_train, features):
@@ -20,8 +21,8 @@ def cv_cps(model, X_train, y_train, features):
     print(cv_fsm['test_score'].std())
     print('##########################')
 
-    model.fit(X_train[features], y_train)
-    print('Coefficients from fit on full train set')
-    print(model.coef_, model.intercept_)
-
+    if type(model) != sklearn.pipeline.Pipeline:
+        model.fit(X_train[features], y_train)
+        print('Coefficients from fit on full train set')
+        print(model.coef_, model.intercept_)
 
