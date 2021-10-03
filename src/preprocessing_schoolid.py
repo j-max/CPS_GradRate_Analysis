@@ -113,6 +113,8 @@ class SchoolYear():
 
         self.merged_df.dropna(subset=['Graduation_Rate_School'], inplace=True)
 
+        self.merged_df = self.merged_df[self.merged_df['Graduation_Rate_School'] > 0]
+
         return self.merged_df
 
 
