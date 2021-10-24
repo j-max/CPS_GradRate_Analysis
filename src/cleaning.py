@@ -55,12 +55,15 @@ def drop_no_grad_rate(merged_df):
     print("0 Graduation Rate")
     print(str(merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]) + " schools")
     print(merged_df[merged_df['Graduation_Rate_School'] == 0]["Short_Name_sp"])
+    print('##########')
+    print('NA Graduation Rates')
+    print(str(merged_df[merged_df['Graduation_Rate_School'].isna()].shape[0]) + " schools")
 
     merged_df = merged_df[merged_df['Graduation_Rate_School'] > 0]
 
 
     if merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]==0:
-        print('All 0 Graduation Rate Schools Dropped')
+        print('All 0/NA Graduation Rate Schools Dropped')
 
     return merged_df
 
@@ -110,7 +113,7 @@ def isolate_high_schools(merged_df):
 def isolate_important_columns(merged_df):
 
     # These columns are consistent across 2016-2019 School Years
-    sy_important_columns = [ "School_ID","Short_Name","Graduation_Rate_School",
+    sy_important_columns = [ "School_ID","Short_Name_sp","Graduation_Rate_School",
                     "Student_Count_Total", "Student_Count_Low_Income",
                     "Student_Count_Special_Ed","Student_Count_English_Learners",
                     "Student_Count_Black","Student_Count_Hispanic",
@@ -122,7 +125,25 @@ def isolate_important_columns(merged_df):
                     "Classroom_Languages","Transportation_El"]
 
 
-    pr_important_columns = ["School_ID", "School_Type"]
+    pr_important_columns = ["School_ID", "School_Type", 'Network']
 
-    return merged_df[sy_df_important_columns + pr_important_columns]
+    return merged_df[sy_important_columns + pr_important_columns]
 
+
+def prep_high_school_dataframe(path_to_sp, path_to_pr):
+
+    '''
+    This function uses the functions above to prep a dataframe for modeling
+    high school graduation rates.
+    '''
+
+
+    df = import_and_merge_data(path_to_sp, path_to_pr)
+    df = convert_is_high_school_to_bool(df)
+    df = isolate_high_schools(df)
+    df = drop_no_students(df)
+    df = drop_no_grad_rate(df)
+    df = isolate_important_columns(df)
+    df = make_percent_low_income(df)
+
+    return df
