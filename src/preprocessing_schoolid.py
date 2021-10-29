@@ -39,6 +39,7 @@ class SchoolYear():
         self.convert_is_high_school_to_bool()
         self.total_high_school_count = self.merged_df['Is_High_School'].sum()
         self.total_school_count = len(self.merged_df['School_ID'].unique())
+        self.make_percent_low_income() 
 
 
     def merge_pr_and_sp(self):

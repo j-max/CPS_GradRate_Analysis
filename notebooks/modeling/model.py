@@ -35,8 +35,8 @@ sy_1819.make_percent_low_income()
 
 ##########Train Test split
 
-X = sy_1819.merged_df.drop("Graduation_Rate_School", axis=1)
-y = sy_1819.merged_df["Graduation_Rate_School"]
+X = sy_1819.drop("Graduation_Rate_School", axis=1)
+y = sy_1819["Graduation_Rate_School"]
 
 # The split below leaves 27 schools for the test set
 X_train, X_test, y_train, y_test = train_test_split(X, y,
