@@ -25,6 +25,8 @@ Files should be downloaded and placed in the `data/chicago_data_portal_csv_files
 I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data](./data) folder.
 
 ![hs_map_by_network](image_files/hs_network_map.svg)
+
+>> The map above shows the Chicago Public Schools colored by network.  The size of the dots represent the size of the student body.
 --
 # Feature Engineering
 
