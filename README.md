@@ -24,9 +24,8 @@ Files should be downloaded and placed in the `data/chicago_data_portal_csv_files
 
 I supplimented the Data Portal data with mean incomes associated with each school's zipcode.  I used Selenium to scrape income data from the [census]( https://factfinder.census.gov). The code for the scrape can be found in the Jupyter notebook found in the [data](./data) folder.
 
-
----
-	
+![hs_map_by_network](image_files/hs_network_map.svg)
+--
 # Feature Engineering
 
 > Both the 2016-17 and 2017-18 original datasets from the data portal dataset includes 661 total schools and 184 high schools.  Of those 184 high schools, 121 in  2016-17 and 124 in 2017-18 had non-null graduation rates.  A histogram of the graduation rates across both years is left-skewed:

@@ -53,3 +53,5 @@ network_colors = {'Charter':'r',
 geo_df['network_colors'] = geo_df['Network'].map(network_colors)
         
 chicago_shape = gpd.read_file(root+'data/shape_files/geo_export_74e2d584-f137-45fb-b412-80348c0deab2.shp')
+
+
