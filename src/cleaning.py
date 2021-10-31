@@ -129,8 +129,14 @@ def isolate_important_columns(merged_df):
 
     return merged_df[sy_important_columns + pr_important_columns]
 
+def isolate_main_networks(merged_df):
 
-def prep_high_school_dataframe(path_to_sp, path_to_pr):
+    main_networks = ['Network 14', 'Network 15', 'Network 16', 'Network 17']
+    main_network_df = merged_df[merged_df['Network'].isin(main_networks)]
+
+    return main_network_df
+
+def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
 
     '''
     This function uses the functions above to prep a dataframe for modeling
@@ -143,7 +149,13 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr):
     df = isolate_high_schools(df)
     df = drop_no_students(df)
     df = drop_no_grad_rate(df)
-    df = isolate_important_columns(df)
+    # df = isolate_important_columns(df)
     df = make_percent_low_income(df)
 
+    # Select only Networks 14, 15, 16, 17
+    if isolate_main_nw==True:
+        return isolate_main_networks(df)
+
     return df
+
+
