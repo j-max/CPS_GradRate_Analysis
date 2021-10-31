@@ -27,6 +27,7 @@ I supplimented the Data Portal data with mean incomes associated with each schoo
 ![hs_map_by_network](image_files/hs_network_map.svg)
 
 >> The map above shows the Chicago Public Schools colored by network.  The size of the dots represent the size of the student body.
+
 --
 # Feature Engineering
 
