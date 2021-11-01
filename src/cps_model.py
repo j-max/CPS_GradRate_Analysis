@@ -1,6 +1,56 @@
 import sklearn.pipeline
 from sklearn.model_selection import cross_val_predict, cross_validate
 from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+
+def cv_10_models(model, X, y):
+
+    '''
+    Parameters:
+    model: a regression model
+    X: a set of independent features
+    y: graduation rates
+
+    Employ 10 fold cross validation and score on R2 and RMSE
+    '''
+    print('##########Training##########')
+    print('R2')
+
+    cv_r2 = cross_validate(model, X, y, scoring='r2', cv=10, return_train_score=True)
+    cv_rmse = cross_validate(model, X, y, scoring='neg_mean_squared_error', cv=10, return_train_score=True)
+
+    print(cv_r2['train_score'])
+    print(cv_r2['train_score'].mean())
+
+    print('RMSE')
+    print(np.sqrt(-cv_rmse['train_score']))
+
+    print("Mean RMSE: ", np.sqrt(-cv_rmse['train_score']).mean())
+    print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['train_score']).std())
+
+    print('\n')
+
+    print('##########Test##########')
+    print('R2')
+
+    print(cv_r2['test_score'])
+    print(cv_r2['test_score'].mean())
+
+    print('RMSE')
+    print(np.sqrt(-cv_rmse['test_score']))
+
+    print("Mean RMSE: ", np.sqrt(-cv_rmse['test_score']).mean())
+    print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['test_score']).std())
+
+def cv_feature_set(model, X, y, list_of_features=None):
+
+    if list_of_features==None:
+        cv_10_models(model, X, y)
+    else:
+        cv_10_models(model, X[list_of_features], y)
+
+
 
 def cv_cps(model, X_train, y_train, features):
 
