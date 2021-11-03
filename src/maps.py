@@ -1,6 +1,6 @@
-import os, sys
+import os
+import sys
 
-from shapely import geometry
 # Set absolute path to the root folder of the directory
 full_path = os.getcwd()
 home_folder = 'CPS_GradRate_Analysis'
@@ -8,6 +8,7 @@ root = full_path.split(home_folder)[0] + home_folder + '/'
 sys.path.append(root)
 
 from src.cleaning import *
+
 import pandas as pd
 import numpy as np
 import geopandas as gpd
@@ -34,24 +35,22 @@ hs_longs = sy_1819_hs["School_Longitude_sp"]
 # series for each High School's latitude`
 hs_lats = sy_1819_hs["School_Latitude_sp"]
 
-hs_geometry = [Point(long, lat) for long, lat in zip(hs_longs, hs_lats)] 
+hs_geometry = [Point(long, lat) for long, lat in zip(hs_longs, hs_lats)]
 
 geo_df = gpd.GeoDataFrame(sy_1819_hs, geometry=hs_geometry)
 
-# This is not necesary to plot, but could come in handy in the future. 
-network_colors = {'Charter':'r', 
-                  'ISP':'g',
-                  'Network 15':'b',
-                  'Network 17':'orange',
-                  np.nan:'black',
-                  'Options':'pink',
-                  'Contract':'green',
-                   'Network 16': 'yellow',
-                   'Network 14':'cyan', 
-                   'AUSL':'magenta'}
+# This is not necesary to plot, but could come in handy in the future.
+network_colors = {'Charter': 'r',
+                  'ISP': 'g',
+                  'Network 15': 'b',
+                  'Network 17': 'orange',
+                  np.nan: 'black',
+                  'Options': 'pink',
+                  'Contract': 'green',
+                  'Network 16':  'yellow',
+                  'Network 14': 'cyan',
+                  'AUSL':  'magenta'}
 
 geo_df['network_colors'] = geo_df['Network'].map(network_colors)
 
 chicago_shape = gpd.read_file(root+'data/shape_files/geo_export_74e2d584-f137-45fb-b412-80348c0deab2.shp') 
-
-geo_df.explore("Network")
