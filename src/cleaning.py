@@ -34,13 +34,13 @@ def drop_no_students(merged_df):
     '''
 
     print("0 Student Count")
-    print(str(merged_df[merged_df['Student_Count_Total'] == 0].shape[0]) + ' schools')
+    print(str(merged_df[merged_df['Student_Count_Total'] == 0].shape[0]) +
+          ' schools')
     print(merged_df[merged_df['Student_Count_Total'] == 0]["Short_Name_sp"])
 
     merged_df = merged_df[merged_df['Student_Count_Total'] > 0]
 
-
-    if merged_df[merged_df['Student_Count_Total'] == 0].shape[0]==0:
+    if merged_df[merged_df['Student_Count_Total'] == 0].shape[0] == 0:
         print('All 0 Student Count Schools Dropped')
 
     return merged_df
@@ -48,12 +48,13 @@ def drop_no_students(merged_df):
 
 def drop_no_grad_rate(merged_df):
 
-    ''' 
+    '''
     Drop schools from a merged dataframe that do not have graduation rates.
-    ''' 
+    '''
 
     print("0 Graduation Rate")
-    print(str(merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]) + " schools")
+    print(str(merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]) +
+          " schools")
     print(merged_df[merged_df['Graduation_Rate_School'] == 0]["Short_Name_sp"])
     print('##########')
     print('NA Graduation Rates')
@@ -109,23 +110,51 @@ def isolate_high_schools(merged_df):
 
     return merged_df
 
+def isolate_numeric_columns(merged_df, add_grad_rates=True):
+
+    sy_numerical_independent_features = ["perc_low_income", 
+        "Student_Count_Total",  "Student_Count_Low_Income",
+        "Student_Count_Special_Ed", "Student_Count_English_Learners",
+        "Student_Count_Black", "Student_Count_Hispanic",
+        "Student_Count_White",  "Student_Count_Asian",
+        "Student_Count_Native_American", "Student_Count_Other_Ethnicity",
+        "Student_Count_Asian_Pacific_Islander", "Student_Count_Multi",
+        "Student_Count_Hawaiian_Pacific_Islander",
+        "Student_Count_Ethnicity_Not_Available"]
+
+    if add_grad_rates:
+        sy_numerical_independent_features.append('Graduation_Rate_School')
+
+    return merged_df[sy_numerical_independent_features]
 
 def isolate_important_columns(merged_df):
 
+    """
+    There are a large number of columns in the dataset that
+    are not used. This function isolates the most important columns.
+
+    One reason for dropping the columns will be to allow
+    for feature selection view recursive feature elimination
+    and other methods
+    """
+
     # These columns are consistent across 2016-2019 School Years
-    sy_important_columns = [ "School_ID","Short_Name_sp","Graduation_Rate_School",
-                    "Student_Count_Total", "Student_Count_Low_Income",
-                    "Student_Count_Special_Ed","Student_Count_English_Learners",
-                    "Student_Count_Black","Student_Count_Hispanic",
-                    "Student_Count_White", "Student_Count_Asian",
-                    "Student_Count_Native_American","Student_Count_Other_Ethnicity",
-                    "Student_Count_Asian_Pacific_Islander","Student_Count_Multi",
-                    "Student_Count_Hawaiian_Pacific_Islander",
-                    "Student_Count_Ethnicity_Not_Available", 'Is_High_School', 'Dress_Code',
-                    "Classroom_Languages","Transportation_El"]
+    sy_id_columns = ["School_ID", "Short_Name_sp"]
 
+    
+    target = ["Graduation_Rate_School"]
 
-    pr_important_columns = ["School_ID", "School_Type", 'Network']
+    sy_boolean_important = ['Is_High_School', 'Dress_Code', "Is_High_School",
+                            "Is_Middle_School", "Is_Elementary_School", "Is_Pre_School",
+                            "Dress_Code", "PreK_School_Day", "Kindergarten_School_Day",
+                            "Bilingual_Services", "Refugee_Services", "Title_1_Eligible",
+                            "PreSchool_Inclusive", "Preschool_Instructional",
+                            "Significantly_Modified", "Hard_Of_Hearing", "Visual_Impairments"]
+
+    categorical_important = ["School_Type", 'Network', "Primary_Category_sp",
+                             "Grades_Offered", "After_School_Hours",
+                             "Earliest_Drop_Off_Time", "Classroom_Languages",
+                             ]
 
     return merged_df[sy_important_columns + pr_important_columns]
 
