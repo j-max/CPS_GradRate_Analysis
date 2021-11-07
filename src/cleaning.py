@@ -13,6 +13,21 @@ eda = full_path.split(home_folder)[0] + home_folder + '/' + 'notebooks/eda/'
 
 sys.path.append(root)
 
+STUDENT_POP_FEATURE_LIST = [
+    "Student_Count_Total",
+    "Student_Count_Low_Income",
+    "Student_Count_Special_Ed",
+    "Student_Count_English_Learners",
+    "Student_Count_Black",
+    "Student_Count_Hispanic",
+    "Student_Count_White",
+    "Student_Count_Asian",
+    "Student_Count_Native_American",
+    "Student_Count_Other_Ethnicity",
+    "Student_Count_Asian_Pacific_Islander",
+    "Student_Count_Multi",
+    "Student_Count_Hawaiian_Pacific_Islander",
+    "Student_Count_Ethnicity_Not_Available"]
 
 def import_and_merge_data(path_to_sp_csv, path_to_pr_csv):
 
