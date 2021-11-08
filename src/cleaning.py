@@ -1,7 +1,6 @@
-import numpy as np
-import os, sys
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
+import os
+import sys
+
 import pandas as pd
 pd.set_option('display.max_columns', None)
 
@@ -114,12 +113,12 @@ def make_percent_demographics(merged_df,
 
         if feature_name == 'Student_Count_Total':
             continue
-        
+
         perc_feature_name = 'perc_' + feature_name
         merged_df[perc_feature_name] = 0
 
-        merged_df[perc_feature_name] = merged_df[feature_name]/\
-                                       merged_df['Student_Count_Total']
+        merged_df[perc_feature_name] = merged_df[feature_name] /\
+            merged_df['Student_Count_Total']
 
         merged_df.fillna({perc_feature_name: 0}, inplace=True)
 
@@ -155,20 +154,41 @@ def isolate_high_schools(merged_df):
 
 def isolate_numeric_columns(merged_df, add_grad_rates=True):
 
-    sy_numerical_independent_features = ["perc_low_income", 
-        "Student_Count_Total",  "Student_Count_Low_Income",
-        "Student_Count_Special_Ed", "Student_Count_English_Learners",
-        "Student_Count_Black", "Student_Count_Hispanic",
-        "Student_Count_White",  "Student_Count_Asian",
-        "Student_Count_Native_American", "Student_Count_Other_Ethnicity",
-        "Student_Count_Asian_Pacific_Islander", "Student_Count_Multi",
-        "Student_Count_Hawaiian_Pacific_Islander",
-        "Student_Count_Ethnicity_Not_Available"]
+    sy_numerical_independent_features = ["perc_low_income",
+                                         "Student_Count_Total",
+                                         "Student_Count_Low_Income",
+                                         "Student_Count_Special_Ed",
+                                         "Student_Count_English_Learners",
+                                         "Student_Count_Black",
+                                         "Student_Count_Hispanic",
+                                         "Student_Count_White",
+                                         "Student_Count_Asian",
+                                         "Student_Count_Native_American",
+                                         "Student_Count_Other_Ethnicity",
+                                         "Student_Count_Asian_Pacific_Islander",
+                                         "Student_Count_Multi",
+                                         "Student_Count_Hawaiian_Pacific_Islander",
+                                         "Student_Count_Ethnicity_Not_Available"                                        ]
 
     if add_grad_rates:
         sy_numerical_independent_features.append('Graduation_Rate_School')
 
     return merged_df[sy_numerical_independent_features]
+
+def isolate_numeric_rates(merged_df, dem_rate_columns=STUDENT_POP_PERC_LIST,
+                          add_grad_rates=False):
+
+    '''
+    Filter the dataframe to only include demographic rate columns
+    and, if add_grad_rates==True, the graduation rate of the school
+    '''
+
+    if add_grad_rates:
+        demrates_plus_gradrate = dem_rate_columns + ['Graduation_Rate_School']
+        return merged_df[demrates_plus_gradrate]
+    else:
+        return merged_df[dem_rate_columns]
+
 
 def isolate_important_columns(merged_df):
 
@@ -222,8 +242,7 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
     df = drop_no_students(df)
     df = drop_no_grad_rate(df)
     # df = isolate_important_columns(df)
-    df = make_percent_low_income(df)
-
+    df = make_percent_demographics(df)
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:
         return isolate_main_networks(df)
