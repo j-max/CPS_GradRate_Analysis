@@ -29,6 +29,10 @@ STUDENT_POP_FEATURE_LIST = [
     "Student_Count_Hawaiian_Pacific_Islander",
     "Student_Count_Ethnicity_Not_Available"]
 
+STUDENT_POP_PERC_LIST = ["perc_" + feature for feature in
+                         STUDENT_POP_FEATURE_LIST if feature !=
+                         "Student_Count_Total"]
+
 def import_and_merge_data(path_to_sp_csv, path_to_pr_csv):
 
     'Simple merge of two school csv files'
@@ -98,6 +102,30 @@ def convert_is_high_school_to_bool(merged_df):
 
     return merged_df
 
+
+def make_percent_demographics(merged_df,
+                              student_list = STUDENT_POP_FEATURE_LIST):
+
+    '''
+    Make demographic numbers proportions of overall student population.
+    '''
+
+    for feature_name in STUDENT_POP_FEATURE_LIST:
+
+        if feature_name == 'Student_Count_Total':
+            continue
+        
+        perc_feature_name = 'perc_' + feature_name
+        merged_df[perc_feature_name] = 0
+
+        merged_df[perc_feature_name] = merged_df[feature_name]/\
+                                       merged_df['Student_Count_Total']
+
+        merged_df.fillna({perc_feature_name: 0}, inplace=True)
+
+    return merged_df
+
+    
 def make_percent_low_income(merged_df):
 
     '''
