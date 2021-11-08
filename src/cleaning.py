@@ -1,10 +1,9 @@
-import pandas as pd
-pd.set_option('display.max_columns', None)
-
 import numpy as np
 import os, sys
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
+import pandas as pd
+pd.set_option('display.max_columns', None)
 
 full_path = os.getcwd()
 home_folder = 'CPS_GradRate_Analysis'
@@ -40,13 +39,12 @@ def import_and_merge_data(path_to_sp_csv, path_to_pr_csv):
     sp_df = pd.read_csv(path_to_sp_csv)
     pr_df = pd.read_csv(path_to_pr_csv)
 
-    merged_df = sp_df.merge(pr_df, on='School_ID', suffixes= ('_sp', '_pr') )
+    merged_df = sp_df.merge(pr_df, on='School_ID', suffixes=('_sp', '_pr'))
 
     return merged_df
 
 
 def drop_no_students(merged_df):
-
 
     '''
     Drop schools from a merged dataframe that do not have student counts.
@@ -77,34 +75,36 @@ def drop_no_grad_rate(merged_df):
     print(merged_df[merged_df['Graduation_Rate_School'] == 0]["Short_Name_sp"])
     print('##########')
     print('NA Graduation Rates')
-    print(str(merged_df[merged_df['Graduation_Rate_School'].isna()].shape[0]) + " schools")
+    print(str(merged_df[merged_df['Graduation_Rate_School'].isna()].shape[0])
+          + " schools")
 
     merged_df = merged_df[merged_df['Graduation_Rate_School'] > 0]
 
-
-    if merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]==0:
+    if merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0] == 0:
         print('All 0/NA Graduation Rate Schools Dropped')
 
     return merged_df
 
 
-
 def convert_is_high_school_to_bool(merged_df):
 
     '''
-    Some of the School Year profiles' Is_High_School columns are encoded as booleans,
-    df some as Y/N.  This function encodes them all as booleans.
+    Some of the School Year profiles' Is_High_School columns are
+    encoded as booleans, df some as Y/N.  This function encodes them
+    all as booleans.
+
     '''
 
     if merged_df['Is_High_School'].dtype == 'O':
         # Convert y/n to True/False
-        merged_df['Is_High_School'] = merged_df['Is_High_School'].map({'Y':True, 'N':False})
+        merged_df['Is_High_School'] = merged_df['Is_High_School'].map(
+            {'Y': True, 'N': False})
 
     return merged_df
 
 
 def make_percent_demographics(merged_df,
-                              student_list = STUDENT_POP_FEATURE_LIST):
+                              student_list=STUDENT_POP_FEATURE_LIST):
 
     '''
     Make demographic numbers proportions of overall student population.
