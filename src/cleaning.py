@@ -228,6 +228,19 @@ def isolate_main_networks(merged_df):
 
     return main_network_df
 
+
+
+def filter_cwoption_special_ed(merged_df):
+
+    '''
+    Since they are outliers in graduation rate, remove citywide option schools
+    and special education schools
+    '''
+
+    merged_df = merged_df[~merged_df['School_Type'].isin(['Citywide-Option', 'Special Education'])]
+
+    return merged_df
+
 def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
 
     '''
@@ -241,12 +254,12 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
     df = isolate_high_schools(df)
     df = drop_no_students(df)
     df = drop_no_grad_rate(df)
-    # df = isolate_important_columns(df)
+    
     df = make_percent_demographics(df)
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:
         return isolate_main_networks(df)
-
+    
     return df
 
 

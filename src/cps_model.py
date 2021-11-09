@@ -4,7 +4,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
 
-def cv_10_models(model, X, y):
+def cv_10_models(model, X, y, verbose=True):
 
     '''
     Parameters:
@@ -14,34 +14,51 @@ def cv_10_models(model, X, y):
 
     Employ 10 fold cross validation and score on R2 and RMSE
     '''
-    print('##########Training##########')
-    print('R2')
+    if verbose:
+        print('##########Training##########')
+        print('R2')
 
-    cv_r2 = cross_validate(model, X, y, scoring='r2', cv=10, return_train_score=True)
-    cv_rmse = cross_validate(model, X, y, scoring='neg_mean_squared_error', cv=10, return_train_score=True)
+        cv_r2 = cross_validate(model, X, y, scoring='r2', cv=10, return_train_score=True)
+        cv_rmse = cross_validate(model, X, y, scoring='neg_mean_squared_error', cv=10, return_train_score=True)
+    
+        print(cv_r2['train_score'])
+        print(cv_r2['train_score'].mean())
 
-    print(cv_r2['train_score'])
-    print(cv_r2['train_score'].mean())
+        print('RMSE')
+        print(np.sqrt(-cv_rmse['train_score']))
 
-    print('RMSE')
-    print(np.sqrt(-cv_rmse['train_score']))
+        print("Mean RMSE: ", np.sqrt(-cv_rmse['train_score']).mean())
+        print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['train_score']).std())
 
-    print("Mean RMSE: ", np.sqrt(-cv_rmse['train_score']).mean())
-    print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['train_score']).std())
+        print('\n')
 
-    print('\n')
+        print('##########Test##########')
+        print('R2')
 
-    print('##########Test##########')
-    print('R2')
+        print(cv_r2['test_score'])
+        print(cv_r2['test_score'].mean())
 
-    print(cv_r2['test_score'])
-    print(cv_r2['test_score'].mean())
+        print('RMSE')
+        print(np.sqrt(-cv_rmse['test_score']))
+   
+        print("Mean RMSE: ", np.sqrt(-cv_rmse['test_score']).mean())
+        print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['test_score']).std())
 
-    print('RMSE')
-    print(np.sqrt(-cv_rmse['test_score']))
+    else:
+        cv_r2 = cross_validate(model, X, y, scoring='r2', cv=10, return_train_score=True)
+        cv_rmse = cross_validate(model, X, y, scoring='neg_mean_squared_error', cv=10, return_train_score=True)
+        print('##########Test##########')
+        print('R2')
 
-    print("Mean RMSE: ", np.sqrt(-cv_rmse['test_score']).mean())
-    print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['test_score']).std())
+        print(cv_r2['test_score'])
+        print(cv_r2['test_score'].mean())
+
+        print('RMSE')
+        print(np.sqrt(-cv_rmse['test_score']))
+   
+        print("Mean RMSE: ", np.sqrt(-cv_rmse['test_score']).mean())
+        print("Standard Deviation RMSE: ", np.sqrt(-cv_rmse['test_score']).std())
+
 
 def cv_feature_set(model, X, y, list_of_features=None):
 
@@ -86,6 +103,7 @@ def print_cv_results(model, X_train, features_list, y_train):
                         return_train_score=True, scoring=['neg_root_mean_squared_error', 'r2'])
 
     
+    
     print('#####r2#####')
 
     print(cv_fsm['train_r2'].mean())
@@ -99,8 +117,7 @@ def print_cv_results(model, X_train, features_list, y_train):
     print('test')
     print(-cv_fsm['test_neg_root_mean_squared_error'])
     print(-cv_fsm['test_neg_root_mean_squared_error'].mean())
-    
-    
+
     # Cross Val Predict
     print('cross val predict metrics: test scores')
     y_hat = cross_val_predict(model, X_train[features_list], y_train, cv=3)
