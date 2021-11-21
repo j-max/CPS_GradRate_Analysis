@@ -1,6 +1,5 @@
 import os
 import sys
-
 import pandas as pd
 pd.set_option('display.max_columns', None)
 
@@ -85,6 +84,9 @@ def drop_no_grad_rate(merged_df):
     return merged_df
 
 
+#########Feature Engineering
+
+
 def convert_is_high_school_to_bool(merged_df):
 
     '''
@@ -146,11 +148,15 @@ def make_percent_low_income(merged_df):
     return merged_df
 
 
+
+###### Filtering 
+
 def isolate_high_schools(merged_df):
 
     merged_df = merged_df[merged_df['Is_High_School'] == True]
 
     return merged_df
+
 
 def isolate_numeric_columns(merged_df, add_grad_rates=True):
 
@@ -207,7 +213,7 @@ def isolate_important_columns(merged_df):
     
     target = ["Graduation_Rate_School"]
 
-    sy_boolean_important = ['Is_High_School', 'Dress_Code', "Is_High_School",
+    sy_boolean_important = ['Is_High_School', 'Dress_Code',
                             "Is_Middle_School", "Is_Elementary_School", "Is_Pre_School",
                             "Dress_Code", "PreK_School_Day", "Kindergarten_School_Day",
                             "Bilingual_Services", "Refugee_Services", "Title_1_Eligible",
@@ -220,6 +226,7 @@ def isolate_important_columns(merged_df):
                              ]
 
     return merged_df[sy_important_columns + pr_important_columns]
+
 
 def isolate_main_networks(merged_df):
 
@@ -237,9 +244,14 @@ def filter_cwoption_special_ed(merged_df):
     and special education schools
     '''
 
-    merged_df = merged_df[~merged_df['School_Type'].isin(['Citywide-Option', 'Special Education'])]
+    merged_df = merged_df[~merged_df['School_Type']
+                          .isin(['Citywide-Option', 'Special Education'])]
 
+    # There is at least one option network school not categorized as Citywide-option
+    merged_df = merged_df[merged_df['Network'] != 'Options']
+    
     return merged_df
+
 
 def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
 
@@ -254,8 +266,8 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
     df = isolate_high_schools(df)
     df = drop_no_students(df)
     df = drop_no_grad_rate(df)
-    
     df = make_percent_demographics(df)
+
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:
         return isolate_main_networks(df)
