@@ -1,3 +1,5 @@
+*.org
+*~
 .idea
 *.DS_Store
 *.ide
