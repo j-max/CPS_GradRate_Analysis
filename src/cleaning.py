@@ -215,7 +215,7 @@ def isolate_important_columns(merged_df):
 
     sy_boolean_important = ['Is_High_School', 'Dress_Code',
                             "Is_Middle_School", "Is_Elementary_School", "Is_Pre_School",
-                            "Dress_Code", "PreK_School_Day", "Kindergarten_School_Day",
+                            "PreK_School_Day", "Kindergarten_School_Day",
                             "Bilingual_Services", "Refugee_Services", "Title_1_Eligible",
                             "PreSchool_Inclusive", "Preschool_Instructional",
                             "Significantly_Modified", "Hard_Of_Hearing", "Visual_Impairments"]
