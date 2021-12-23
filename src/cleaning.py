@@ -1,7 +1,6 @@
 import os
 import sys
 import pandas as pd
-pd.set_option('display.max_columns', None)
 
 full_path = os.getcwd()
 home_folder = 'CPS_GradRate_Analysis'
@@ -67,25 +66,33 @@ def drop_no_grad_rate(merged_df):
     Drop schools from a merged dataframe that do not have graduation rates.
     '''
 
+    # Print number of schools in original with no graduation rates
     print("0 Graduation Rate")
     print(str(merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]) +
           " schools")
+
+    # Print school names with no grad rates
     print(merged_df[merged_df['Graduation_Rate_School'] == 0]["Short_Name_sp"])
+
+    # Print schools that have n/a for a grad rate
     print('##########')
     print('NA Graduation Rates')
     print(str(merged_df[merged_df['Graduation_Rate_School'].isna()].shape[0])
           + " schools")
 
+    # Keep only schools with graduation rates
     merged_df = merged_df[merged_df['Graduation_Rate_School'] > 0]
 
-    if merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0] == 0:
+    # Print statement if all schools w/o grad rates have been dropped
+    if not merged_df[merged_df['Graduation_Rate_School'] == 0].shape[0]:
         print('All 0/NA Graduation Rate Schools Dropped')
+    else:
+        print('There are still schools without grade rates in the df')
 
     return merged_df
 
 
 #########Feature Engineering
-
 
 def convert_is_high_school_to_bool(merged_df):
 
@@ -148,8 +155,7 @@ def make_percent_low_income(merged_df):
     return merged_df
 
 
-
-###### Filtering 
+# Filtering
 
 def isolate_high_schools(merged_df):
 
@@ -174,7 +180,7 @@ def isolate_numeric_columns(merged_df, add_grad_rates=True):
                                          "Student_Count_Asian_Pacific_Islander",
                                          "Student_Count_Multi",
                                          "Student_Count_Hawaiian_Pacific_Islander",
-                                         "Student_Count_Ethnicity_Not_Available"                                        ]
+                                         "Student_Count_Ethnicity_Not_Available"]
 
     if add_grad_rates:
         sy_numerical_independent_features.append('Graduation_Rate_School')
