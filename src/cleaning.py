@@ -7,6 +7,7 @@ home_folder = 'CPS_GradRate_Analysis'
 root = full_path.split(home_folder)[0] + home_folder + '/'
 eda = full_path.split(home_folder)[0] + home_folder + '/' + 'notebooks/eda/'
 
+
 sys.path.append(root)
 
 STUDENT_POP_FEATURE_LIST = [
@@ -29,6 +30,36 @@ STUDENT_POP_PERC_LIST = ["perc_" + feature for feature in
                          STUDENT_POP_FEATURE_LIST if feature !=
                          "Student_Count_Total"]
 
+
+def prep_high_school_dataframe(path_to_sp, path_to_pr,
+                               path_to_prior_year_sp,
+                               path_to_prior_year_pr,
+                               isolate_main_nw=False,
+                               new_year_added='1718'):
+
+    '''
+    This function uses the functions above to prep a dataframe for modeling
+    high school graduation rates.
+    '''
+
+
+    df = import_and_merge_data(path_to_sp, path_to_pr)
+    df = convert_is_high_school_to_bool(df)
+    df = isolate_high_schools(df)
+    df = drop_no_students(df)
+    df = drop_no_grad_rate(df)
+    df = make_percent_demographics(df)
+    df = delta_student_count(df, path_to_prior_year_sp,
+                             path_to_prior_year_pr,
+                             new_year_added=new_year_added)
+
+    # Select only Networks 14, 15, 16, 17
+    if isolate_main_nw==True:
+        return isolate_main_networks(df)
+    
+    return df
+
+
 def import_and_merge_data(path_to_sp_csv, path_to_pr_csv):
 
     'Simple merge of two school csv files'
@@ -37,6 +68,23 @@ def import_and_merge_data(path_to_sp_csv, path_to_pr_csv):
     pr_df = pd.read_csv(path_to_pr_csv)
 
     merged_df = sp_df.merge(pr_df, on='School_ID', suffixes=('_sp', '_pr'))
+
+    return merged_df
+
+
+def convert_is_high_school_to_bool(merged_df):
+
+    '''
+    Some of the School Year profiles' Is_High_School columns are
+    encoded as booleans, df some as Y/N.  This function encodes them
+    all as booleans.
+
+    '''
+
+    if merged_df['Is_High_School'].dtype == 'O':
+        # Convert y/n to True/False
+        merged_df['Is_High_School'] = merged_df['Is_High_School'].map(
+            {'Y': True, 'N': False})
 
     return merged_df
 
@@ -94,23 +142,6 @@ def drop_no_grad_rate(merged_df):
 
 #########Feature Engineering
 
-def convert_is_high_school_to_bool(merged_df):
-
-    '''
-    Some of the School Year profiles' Is_High_School columns are
-    encoded as booleans, df some as Y/N.  This function encodes them
-    all as booleans.
-
-    '''
-
-    if merged_df['Is_High_School'].dtype == 'O':
-        # Convert y/n to True/False
-        merged_df['Is_High_School'] = merged_df['Is_High_School'].map(
-            {'Y': True, 'N': False})
-
-    return merged_df
-
-
 def make_percent_demographics(merged_df,
                               student_list=STUDENT_POP_FEATURE_LIST):
 
@@ -132,6 +163,29 @@ def make_percent_demographics(merged_df,
         merged_df.fillna({perc_feature_name: 0}, inplace=True)
 
     return merged_df
+
+
+def delta_student_count(merged_df, path_to_prior_year_sp,
+                        path_to_prior_year_pr,
+                        new_year_added):
+
+    df_1718 = import_and_merge_data(path_to_prior_year_sp,
+                                    path_to_prior_year_pr)
+
+    df_1718_sct = df_1718[['School_ID', 'Student_Count_Total']]
+
+    df_plus_delta_sc = pd.merge(merged_df, df_1718_sct,
+                                how='left', on='School_ID',
+                                suffixes=('', '_'+new_year_added))
+
+    # Make sure no schools were lost in the merge
+    assert merged_df.shape[0] == df_plus_delta_sc.shape[0], 'Merge lost schools'
+
+    df_plus_delta_sc['student_count_total_change_1_year'] = (
+        df_plus_delta_sc['Student_Count_Total'] -
+        df_plus_delta_sc['Student_Count_Total_1718'])
+
+    return df_plus_delta_sc
 
     
 def make_percent_low_income(merged_df):
@@ -257,27 +311,4 @@ def filter_cwoption_special_ed(merged_df):
     merged_df = merged_df[merged_df['Network'] != 'Options']
     
     return merged_df
-
-
-def prep_high_school_dataframe(path_to_sp, path_to_pr, isolate_main_nw=False):
-
-    '''
-    This function uses the functions above to prep a dataframe for modeling
-    high school graduation rates.
-    '''
-
-
-    df = import_and_merge_data(path_to_sp, path_to_pr)
-    df = convert_is_high_school_to_bool(df)
-    df = isolate_high_schools(df)
-    df = drop_no_students(df)
-    df = drop_no_grad_rate(df)
-    df = make_percent_demographics(df)
-
-    # Select only Networks 14, 15, 16, 17
-    if isolate_main_nw==True:
-        return isolate_main_networks(df)
-    
-    return df
-
 
