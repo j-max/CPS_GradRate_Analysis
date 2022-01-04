@@ -187,22 +187,24 @@ def delta_student_count(merged_df, path_to_prior_year_sp,
 
     return df_plus_delta_sc
 
-    
+
 def make_percent_low_income(merged_df):
 
-    '''
-    Create new column which is percent of the total population which is low income.
+    '''Create new column which is percent of the total population which
+    is low income.
 
     Parameters:
     self.merged_df: dataframe of school id's with low income population count.
 
     Returns:
     A dataframe with a per_low_income column added to it.
+
     '''
 
     merged_df['perc_low_income'] = 0
 
-    merged_df['perc_low_income'] = merged_df['Student_Count_Low_Income']/merged_df['Student_Count_Total']
+    merged_df['perc_low_income'] = (merged_df['Student_Count_Low_Income'] /
+                                    merged_df['Student_Count_Total'])
 
     merged_df.fillna({'perc_low_income': 0}, inplace=True)
 
@@ -263,30 +265,46 @@ def isolate_important_columns(merged_df):
     are not used. This function isolates the most important columns.
 
     One reason for dropping the columns will be to allow
-    for feature selection view recursive feature elimination
+    for feature selection via recursive feature elimination
     and other methods
     """
 
     # These columns are consistent across 2016-2019 School Years
     sy_id_columns = ["School_ID", "Short_Name_sp"]
 
-    
     target = ["Graduation_Rate_School"]
 
     sy_boolean_important = ['Is_High_School', 'Dress_Code',
-                            "Is_Middle_School", "Is_Elementary_School", "Is_Pre_School",
+                            "Is_Middle_School", "Is_Elementary_School",
+                            "Is_Pre_School",
                             "PreK_School_Day", "Kindergarten_School_Day",
-                            "Bilingual_Services", "Refugee_Services", "Title_1_Eligible",
+                            "Bilingual_Services", "Refugee_Services",
+                            "Title_1_Eligible",
                             "PreSchool_Inclusive", "Preschool_Instructional",
-                            "Significantly_Modified", "Hard_Of_Hearing", "Visual_Impairments"]
+                            "Significantly_Modified", "Hard_Of_Hearing",
+                            "Visual_Impairments"]
 
     categorical_important = ["School_Type", 'Network', "Primary_Category_sp",
                              "Grades_Offered", "After_School_Hours",
                              "Earliest_Drop_Off_Time", "Classroom_Languages",
                              ]
 
-    return merged_df[sy_important_columns + pr_important_columns]
+    engineered_columns = [
+        'perc_Student_Count_Low_Income', 'perc_Student_Count_Special_Ed',
+        'perc_Student_Count_English_Learners', 'perc_Student_Count_Black',
+        'perc_Student_Count_Hispanic', 'perc_Student_Count_White',
+        'perc_Student_Count_Asian', 'perc_Student_Count_Native_American',
+        'perc_Student_Count_Other_Ethnicity', 'perc_Student_Count_Asian_Pacific_Islander',
+        'perc_Student_Count_Multi', 'perc_Student_Count_Hawaiian_Pacific_Islander',
+        'perc_Student_Count_Ethnicity_Not_Available', 'Student_Count_Total_1718',
+        'student_count_total_change_1_year']
 
+    return merged_df[target +
+                    sy_id_columns +
+                    sy_boolean_important +
+                    categorical_important +
+                    engineered_columns] 
+                    
 
 def isolate_main_networks(merged_df):
 
@@ -294,7 +312,6 @@ def isolate_main_networks(merged_df):
     main_network_df = merged_df[merged_df['Network'].isin(main_networks)]
 
     return main_network_df
-
 
 
 def filter_cwoption_special_ed(merged_df):
@@ -307,8 +324,8 @@ def filter_cwoption_special_ed(merged_df):
     merged_df = merged_df[~merged_df['School_Type']
                           .isin(['Citywide-Option', 'Special Education'])]
 
-    # There is at least one option network school not categorized as Citywide-option
+    # There is at least one option network school not categorized as
+    # Citywide-option
     merged_df = merged_df[merged_df['Network'] != 'Options']
-    
-    return merged_df
 
+    return merged_df
