@@ -258,7 +258,7 @@ def isolate_numeric_rates(merged_df, dem_rate_columns=STUDENT_POP_PERC_LIST,
         return merged_df[dem_rate_columns]
 
 
-def isolate_important_columns(merged_df):
+def isolate_important_columns(merged_df, confident_columns=False, exclude_target=True):
 
     """
     There are a large number of columns in the dataset that
@@ -299,12 +299,24 @@ def isolate_important_columns(merged_df):
         'perc_Student_Count_Ethnicity_Not_Available', 'Student_Count_Total_1718',
         'student_count_total_change_1_year']
 
-    return merged_df[target +
-                    sy_id_columns +
-                    sy_boolean_important +
-                    categorical_important +
-                    engineered_columns] 
-                    
+
+    confident_columns =  ["Dress_Code", "Network"]
+                   
+    if not confident_columns:
+        return merged_df[target +
+                         sy_id_columns +
+                         sy_boolean_important +
+                         categorical_important +
+                         engineered_columns]
+
+    if not exclude_target:
+        return merged_df[target +
+                         engineered_columns +
+                         confident_columns]
+
+    return merged_df[engineered_columns +
+                     confident_columns]
+
 
 def isolate_main_networks(merged_df):
 
