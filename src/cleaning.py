@@ -33,6 +33,35 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
     '''
     This function uses the functions above to prep a dataframe for modeling
     high school graduation rates.
+    
+    It incorporates functions from the filtering and feature_engineering 
+    modules. 
+    
+    The result of these functions is a dataframe of CPS High Schools
+    that exclude those with objectives that don't directly align with 
+    increasing graduation rates.  
+    
+    They also create new features from quantitative demographic counts.
+    
+
+    
+    Parameters:
+        path_to_sp: path to the most recent School Profile csv.
+        path_to_pr: path to the most recent Progress Report csv.
+        path_to_prior_year_sp: path to the 2nd most recent School Profile csv.
+        path_to_prior_year_pr: path to the 2nd most recent Progress Report csv.
+        isolate_main_nw: a boolean to remove all schools outside 
+             of the main networks (14-17)
+        new_year_added: a string used to append suffixes 
+            to duplicate columns after merging prior to current year csv's.
+        remove_outliers: a boolean set to True to remove Options, special ed schools, 
+            and schools whose records are missing graduation rates.
+     
+    Return:
+        df: A dataframe intended to be used with regression modeling 
+        with Graduation_Rate_School as the target. The dataframe has
+        outliers removed, features engineered from current and prior 
+        years, and contains only high schools. 
 
     '''
 
