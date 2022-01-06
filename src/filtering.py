@@ -1,4 +1,6 @@
 import pandas as pd
+from src.feature_lists import STUDENT_POP_PERC_LIST
+
 
 def drop_no_students(merged_df):
 
@@ -129,7 +131,7 @@ def isolate_important_columns(merged_df, confident_columns=False, exclude_target
                              "Earliest_Drop_Off_Time", "Classroom_Languages",
                              ]
 
-    engineered_columns = [
+    engineered_columns = ['Student_Count_Total',
         'perc_Student_Count_Low_Income', 'perc_Student_Count_Special_Ed',
         'perc_Student_Count_English_Learners', 'perc_Student_Count_Black',
         'perc_Student_Count_Hispanic', 'perc_Student_Count_White',

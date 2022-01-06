@@ -12,6 +12,7 @@ from src.feature_lists import STUDENT_POP_PERC_LIST
 from src.filtering import isolate_high_schools
 from src.filtering import drop_no_students
 from src.filtering import drop_no_grad_rate
+from src.filtering import filter_cwoption_special_ed
 
 
 FULL_PATH = os.getcwd()
@@ -26,11 +27,13 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
                                path_to_prior_year_sp,
                                path_to_prior_year_pr,
                                isolate_main_nw=False,
-                               new_year_added='1718'):
+                               new_year_added='1718',
+                               remove_outliers=True):
 
     '''
     This function uses the functions above to prep a dataframe for modeling
     high school graduation rates.
+
     '''
 
 
@@ -47,6 +50,9 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:
         return isolate_main_networks(df)
+
+    if remove_outliers:
+        return filter_cwoption_special_ed(df)
     
     return df
 
