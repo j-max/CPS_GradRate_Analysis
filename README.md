@@ -6,7 +6,10 @@
 
 # Summary
 
-> This projects models Chicago Public Schools high school graduation rates with regression techniques.  I am aware that graduation rates are not the be all end all as a metric for school quality. Like test scores, graduation rates are just numbers. No matter how hard one tries, numbers can never capture the full picture of a student's education. Nonetheless, a linear regression study requires a continuous target variable, and graduation rate fits the bill.
+This projects models Chicago Public Schools high school graduation rates with regression techniques.  Graduation rate is not an all-encompassing measure of school effectivness, but no such quantitative measure exists. That being said, graduation rate does capture important aspects of school effectiveness.  It reflects what proportion of a school's student population which is given the opportunities afforded by a high school degree.  
+
+In 2020, high school degree holders earned a median income approaching $12,000 more than those without a degree [source](https://www.bls.gov/emp/tables/education-summary.htm).
+A high school degree is a prerequisite, not just for college admission, but for entry into most every work domain. More education, which requires a sequential degree acquisition process starting with a high school diploma, usually results in a steady increase in median income. 
 
 ---
 
