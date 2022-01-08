@@ -65,6 +65,7 @@ def delta_student_count(merged_df,
                                 how='left', on='School_ID',
                                 suffixes=('', '_'+new_year_added))
 
+
     # Make sure no schools were lost in the merge
     assert merged_df.shape[0] == df_plus_delta_sc.shape[0], 'Merge lost schools'
 

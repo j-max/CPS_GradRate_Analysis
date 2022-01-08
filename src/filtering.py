@@ -142,7 +142,8 @@ def isolate_important_columns(merged_df, confident_columns=False, exclude_target
         'student_count_total_change_1_year']
 
 
-    confident_columns =  ["Dress_Code", "Network"]
+    confident_columns =  ["Dress_Code", "Network",
+                          "Student_Count_Total", "perc_Student_Count_Low_Income" ]
                    
     if not confident_columns:
         return merged_df[target +
