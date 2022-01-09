@@ -3,8 +3,9 @@ import sys
 import pandas as pd
 
 from src.feature_engineering import convert_is_high_school_to_bool
-from src.feature_engineering import make_percent_demographics
 from src.feature_engineering import delta_student_count
+from src.feature_engineering import make_percent_demographics
+from src.feature_engineering import northwest_quadrant
 
 from src.feature_lists import STUDENT_POP_FEATURE_LIST
 from src.feature_lists import STUDENT_POP_PERC_LIST
@@ -42,9 +43,7 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
     increasing graduation rates.  
     
     They also create new features from quantitative demographic counts.
-    
-
-    
+        
     Parameters:
         path_to_sp: path to the most recent School Profile csv.
         path_to_pr: path to the most recent Progress Report csv.
@@ -75,6 +74,8 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
     df = delta_student_count(df, path_to_prior_year_sp,
                              path_to_prior_year_pr,
                              new_year_added=new_year_added)
+    df['nw_quadrant'] = df.apply(northwest_quadrant, axis=1)
+
 
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:

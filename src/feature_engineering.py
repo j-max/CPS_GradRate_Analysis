@@ -53,7 +53,7 @@ def delta_student_count(merged_df,
                         path_to_prior_year_sp,
                         path_to_prior_year_pr,
                         new_year_added):
-    
+
     sp_df = pd.read_csv(path_to_prior_year_sp)
     pr_df = pd.read_csv(path_to_prior_year_pr)
 
@@ -74,3 +74,33 @@ def delta_student_count(merged_df,
         df_plus_delta_sc['Student_Count_Total_'+new_year_added])
 
     return df_plus_delta_sc
+
+
+def northwest_quadrant(row,
+                       longitude_column_name='School_Longitude_pr',
+                       latitude_column_name='School_Latitude_pr'):
+
+    '''The northwest quadrant of Chicago is negatively correlated to
+    graduation rate.  This function creates a boolean that indicates
+    if a school is in the northwest quadrant or not.
+
+    Parameters: a row of a merged dataframe (meant to be used with an
+    apply statement
+
+    Returns: a boolean indicating if a school is in the northwest
+    quadrant
+
+    '''
+
+    latitude_boundary = 41.825
+    longitude_boundary = -87.68
+
+    # () separating the & prevent Type Error
+    if ((row[longitude_column_name] < longitude_boundary) &
+            (row[latitude_column_name] > latitude_boundary)):
+
+        return True
+
+    return False
+
+    
