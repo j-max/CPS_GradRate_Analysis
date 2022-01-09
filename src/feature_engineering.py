@@ -104,3 +104,15 @@ def northwest_quadrant(row,
     return False
 
     
+def is_charter(network_value):
+
+    '''Create a boolean column indicating if a record is a charter school.
+
+    Used in an apply statement in the prep_high_school_dataframe function.
+    Apply the function to the 'Network' column.
+    '''
+
+    if network_value == 'Charter':
+        return True
+
+    return 'False'
