@@ -5,6 +5,7 @@ import pandas as pd
 from src.feature_engineering import convert_is_high_school_to_bool
 from src.feature_engineering import delta_student_count
 from src.feature_engineering import is_charter
+from src.feature_engineering import is_isp
 from src.feature_engineering import make_percent_demographics
 from src.feature_engineering import northwest_quadrant
 
@@ -77,7 +78,7 @@ def prep_high_school_dataframe(path_to_sp, path_to_pr,
                              new_year_added=new_year_added)
     df['nw_quadrant'] = df.apply(northwest_quadrant, axis=1)
     df['is_charter'] = df['Network'].apply(is_charter)
-
+    df['is_isp'] = df['Network'].apply(is_isp)
 
     # Select only Networks 14, 15, 16, 17
     if isolate_main_nw==True:

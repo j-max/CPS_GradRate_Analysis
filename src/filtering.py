@@ -185,3 +185,18 @@ def filter_cwoption_special_ed(merged_df):
 
     return merged_df
 
+def isolate_columns_from_eda(merged_df):
+
+    '''Filter dataframe to include columns analyzed in EDA'''
+
+    sy_id_columns = ["School_ID", "Short_Name_sp"]
+
+    eda_columns = ['Dress_Code', 'Network', 'Student_Count_Total',
+                   'perc_Student_Count_Low_Income',
+                   'perc_Student_Count_Special_Ed',
+                   'Student_Count_Total_1718',
+                   'student_count_total_change_1_year',
+                   'nw_quadrant', 'is_charter', 'is_isp']
+
+    return merged_df[['Graduation_Rate_School']+[sy_id_columns]+[eda_columns]]
+

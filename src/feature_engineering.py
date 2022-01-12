@@ -12,7 +12,6 @@ def convert_is_high_school_to_bool(merged_df):
     all as booleans.
 
     '''
-    
 
     if merged_df['Is_High_School'].dtype == 'O':
         # Convert y/n to True/False
@@ -27,7 +26,7 @@ def make_percent_demographics(merged_df,
 
     '''
     Make demographic number proportions of overall student population.
-    The features that are to be converted are found in 
+    The features that are to be converted are found in
     STUDENT_POP_FEATURE_LIST found in the feature_list.py file.
     Examples are Student_Count_Low_Income, Student_Count_Special_Ed,
     and counts for racial demographics..
@@ -53,6 +52,7 @@ def delta_student_count(merged_df,
                         path_to_prior_year_sp,
                         path_to_prior_year_pr,
                         new_year_added):
+    '''Calculate the change in student count from previous year to present'''
 
     sp_df = pd.read_csv(path_to_prior_year_sp)
     pr_df = pd.read_csv(path_to_prior_year_pr)
@@ -65,9 +65,9 @@ def delta_student_count(merged_df,
                                 how='left', on='School_ID',
                                 suffixes=('', '_'+new_year_added))
 
-
     # Make sure no schools were lost in the merge
-    assert merged_df.shape[0] == df_plus_delta_sc.shape[0], 'Merge lost schools'
+    assert (merged_df.shape[0] == df_plus_delta_sc.shape[0],
+            'Merge lost schools')
 
     df_plus_delta_sc['student_count_total_change_1_year'] = (
         df_plus_delta_sc['Student_Count_Total'] -
@@ -110,9 +110,19 @@ def is_charter(network_value):
 
     Used in an apply statement in the prep_high_school_dataframe function.
     Apply the function to the 'Network' column.
+
     '''
 
     if network_value == 'Charter':
         return True
 
-    return 'False'
+    return False
+
+def is_isp(network_value):
+
+    '''Create a boolean column indicating if a school is an ISP school.'''
+
+    if network_value == 'ISP':
+        return True
+
+    return False
