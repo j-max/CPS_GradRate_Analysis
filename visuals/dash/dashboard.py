@@ -9,40 +9,53 @@ import plotly.express as px
 # Set absolute path to the root folder of the directory
 import os
 import sys
-full_path = os.getcwd()
-home_folder = 'CPS_GradRate_Analysis'
-root = full_path.split(home_folder)[0] + home_folder + '/'
-sys.path.append(root)
-
+FULL_PATH = os.getcwd()
+HOME_FOLDER = 'CPS_GradRate_Analysis'
+ROOT = FULL_PATH.split(HOME_FOLDER)[0] + HOME_FOLDER + '/'
+sys.path.append(ROOT)
 
 sys.path.append('../..')
 
 import pandas as pd
 import sklearn
-from src.preprocessing_schoolid import SchoolYear
+from src.cleaning import prep_high_school_dataframe
 from src.cps_model import print_cv_results
-from sklearn.model_selection import train_test_split
 
-
-##########Preprocess with School Year Class
-sy_1819 = SchoolYear(root+'/data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv',
-                    root+ '/data/chicago_data_portal_csv_files/.ipynb_checkpoints/Chicago_Public_Schools_-_School_Progress_Reports_SY1819-checkpoint.csv')
-
-sy_1819.isolate_high_schools()
-sy_1819.drop_no_gr_schools()
-sy_1819.drop_no_student_schools()
-sy_1819.make_percent_low_income()
-
-
+# Preprocess with School Year Class
+sy_1819 = prep_high_school_dataframe(ROOT+'/data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1819.csv',
+                     ROOT+ '/data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Progress_Reports_SY1819.csv',
+                     ROOT+ '/data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Progress_Reports_SY1718.csv',
+                     ROOT+'/data/chicago_data_portal_csv_files/Chicago_Public_Schools_-_School_Profile_Information_SY1718.csv')
 
 colors = {
-    'background': '#111111',
-    'text': '#C5DB5F'
+    'background': '#41B6E6',
+    'text': '#000000'
 }
 app = dash.Dash(__name__) # Initialize the app 
-# ------------------------------------------------------------------
-app.layout = html.Div() # Define the app 
-# ------------------------------------------------------------------
-if __name__ == '__main__':
-    app.run_server(debug=True) # Run the app 
 
+# ------------------------------------------------------------------
+fig = px.scatter(sy_1819, x='Student_Count_Total', y='Graduation_Rate_School')
+
+app.layout = html.Div(children=[
+    html.H1(children="CPS Dashboard",
+            style={
+                'textAlign': 'center',
+                'color': colors['text']
+            }
+    ),
+    html.Div(children='''
+        A Dashboard Visualizing Statistics about CPS Schools
+''',
+             style={
+                 'textAlign': 'center'
+                 }
+                     
+    ),
+    dcc.Graph(
+        id='Total Students vs. Graduation Rate',
+        figure=fig
+    )
+])       
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
