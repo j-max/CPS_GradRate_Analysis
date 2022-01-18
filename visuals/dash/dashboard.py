@@ -1,9 +1,9 @@
+import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import json
-import pandas as pd
 import plotly.express as px 
 
 # Set absolute path to the root folder of the directory
@@ -34,8 +34,6 @@ colors = {
 app = dash.Dash(__name__) # Initialize the app 
 
 # ------------------------------------------------------------------
-fig = px.scatter(sy_1819, x='Student_Count_Total', y='Graduation_Rate_School')
-
 app.layout = html.Div(children=[
     html.H1(children="CPS Dashboard",
             style={
@@ -45,17 +43,46 @@ app.layout = html.Div(children=[
     ),
     html.Div(children='''
         A Dashboard Visualizing Statistics about CPS Schools
-''',
+             ''',
              style={
                  'textAlign': 'center'
                  }
-                     
     ),
     dcc.Graph(
-        id='Total Students vs. Graduation Rate',
-        figure=fig
+        id='continuous-v-graduation-rate',
+    ),
+    
+    html.Br(),
+    html.Label("Radio Items"),
+    dcc.RadioItems(
+        children='''Select a demographic population to see correlation to 
+                    graduation rate''',
+        id='demographic_radio',
+        options=[
+            {'label': 'Student Count', 'value': 'Student_Count_Total'},
+            {'label': 'Low Income Students',
+             'value': 'perc_Student_Count_Low_Income'},
+            {'label': 'Special Ed Students',
+             'value': 'perc_Student_Count_Special_Ed'}
+        ]
     )
-])       
+])
+
+
+@app.callback(
+    Output('continuous-v-graduation-rate', 'figure'),
+    Input('demographic_radio', 'value'))
+def update_figure(dem_selected):
+
+    '''Plot demographic count vs graduation rate based on radio selection'''
+
+    fig = px.scatter(sy_1819, x=dem_selected,
+                     y='Graduation_Rate_School',
+                     hover_name='Short_Name_sp')
+
+    fig.update_layout(transition_duration=500)
+
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
